@@ -1,0 +1,51 @@
+# check your version: https://docs.docker.com/compose/compose-file/
+version: "3.7"
+
+
+services:
+# first container
+    flask:
+        # look for dockerfile and build the container
+        build: ./flask
+        container_name:  flask
+        restart: always
+        # set enviornemt variables
+        environment: 
+            - APP_NAME=FlaskApp
+        #  mount the volumes so we can change code and hot reload
+        volumes:
+            - './flask:/flask'
+        #  expose port on the container, only to other containers
+        # You never touch this directly but rather via nginx at :80/api
+        expose:
+            - 8080
+
+    nginx:
+        # look for dockerfile and build the container
+        build: ./nginx
+        container_name:  nginx
+        restart: always
+        #  mount the volumes so we can change code and hot reload
+        volumes:
+            - './vue/project/dist:/etc/nginx/html'
+        # port allows the host machine to link to container
+        # pass 80 from host machine to 80 of the image filesystem
+        ports:
+            - "80:80"
+
+    # This is purely dev
+    # Be sure to build for production
+    vue:
+        # look for dockerfile and build the container
+        build: ./vue
+        container_name:  vue
+        restart: always
+        #  mount the volumes so we can change code and hot reload
+        volumes:
+            - './vue/project:/project'
+        working_dir: /project
+        command: yarn dev -- --host
+        # port allows the host machine to link to container
+        # pass 3000 from host machine to 3000 of the image filesystem
+        ports:
+            - "3000:3000"
