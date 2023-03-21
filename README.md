@@ -1,6 +1,15 @@
 # Web Site Temple with Nginx-VueJS (Vuetify)-Flask
 
 ## Instructions
+Directly after clone, create node_modules folder:
+```bash
+docker run \
+  --rm \
+  -v /projects/coris_db/vue/project:/project \
+  -w /project \
+  node:lts-alpine3.17 npm i
+```
+
 Start all services:
 ```bash
 docker compose up -d
